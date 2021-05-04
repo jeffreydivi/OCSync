@@ -43,8 +43,16 @@ def getData(msg):
     try:
         creds = msg["auth"]
         if validateKey(creds["username"], creds["password"]):
+            if msg["firstTime"]:
+                status = "first"
+            else:
+                status = "update"
             # Logged in; update data.
-            socketio.emit("response", memory)
+            socketio.emit("response", {
+                "user": creds["username"],
+                "status": status,
+                "data": memory
+            })
         else:
             socketio.emit("response", createErrorDict(403, "Incorrect credentials."))
     except:
