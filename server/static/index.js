@@ -8,11 +8,11 @@ function loadPage(target) {
 function main() {
     document.querySelector("#login > button").onclick = (evt) => {
         socket.emit("get", {
-        "auth": {
-                "username": document.querySelector("#login > input[type=text]").value,
-                "password": document.querySelector("#login > input[type=password]").value
-            },
-        "firstTime": true
+            "auth": {
+                    "username": document.querySelector("#login > input[type=text]").value,
+                    "password": document.querySelector("#login > input[type=password]").value
+                },
+            "firstTime": true
         });
     }
 }
@@ -33,6 +33,10 @@ socket.on("response", (data) => {
         document.querySelector("#login > p#error").innerText = "Could not authenticate.";
     } else if (data["status"] === "first") {
         loadPage("main");
+    }
+
+    if (data["status"] === "first" || data["status"] === "update") {
+        document.querySelector("code").innerText = JSON.stringify(data["data"]);
     }
 });
 

@@ -60,11 +60,18 @@ def getData(msg):
 
 @socketio.on("update")
 def uploadData(msg):
+    global memory
     try:
         creds = msg["auth"]
         if validateKey(creds["username"], creds["password"]):
             # Logged in; update data.
             memory = {**memory, **msg["data"]}
+            # broadcast change to clients
+            socketio.emit("response",  {
+                "user": creds["username"],
+                "status": "update",
+                "data": memory
+            }, broadcast=True)
         else:
             socketio.emit("response", createErrorDict(403, "Incorrect credentials."))
     except:
