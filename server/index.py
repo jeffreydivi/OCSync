@@ -5,7 +5,7 @@ import json
 import bcrypt
 import base64
 import threading
-import sys
+import os
 
 # Load config
 with open("config.json") as config_file:
@@ -40,7 +40,6 @@ def data():
 # Please, please, please! Use WSS (WebSockets Secure).
 @socketio.on("get")
 def getData(msg):
-    print("Sending...")
     try:
         creds = msg["auth"]
         if validateKey(creds["username"], creds["password"]):
@@ -108,7 +107,7 @@ def initConsoleMode():
             print("Available commands: help, quit, users, report")
         elif first == "quit":
             print("Shutting down...")
-            sys.exit()
+            os._exit(os.EX_OK)
         elif first == "users":
             try:
                 if cmd[1].lower() == "list":
@@ -132,7 +131,7 @@ def initConsoleMode():
 
 if __name__ == '__main__':
     if config["debug"]:
-        threading.Thread(target=init, daemon=True).start()
+        threading.Thread(target=init).start()
         initConsoleMode()
     else:
         init()
