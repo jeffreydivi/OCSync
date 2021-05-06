@@ -6,17 +6,36 @@
     <link rel="stylesheet" type="text/css" href="/static/index.css">
 </head>
 <body>
+    <nav>
+        <h1>OC<span>Sync</span></h1>
+        <h2>Log in</h2>
+    </nav>
     <page id="login">
-        <h1>Welcome to OCSync</h1>
-        <input placeholder="Username" type="text">
-        <input placeholder="Password" type="password">
-        <button>Log In</button>
-        <p id="error"></p>
+        <h2>Log In to OCSync</h2>
+        <div class="center">
+            <input placeholder="Username" type="text">
+            <input placeholder="Password" type="password">
+            <button>Log In</button>
+            <p id="error"></p>
+            <p>Note: Your credentials will be saved.</p>
+        </div>
     </page>
 
     <page id="main">
-        <h1>Hello, user.</h1>
-        <code></code>
+        <h2>Access Control</h2>
+        <p>Add a new entity to OCSync. Each user, data point, and more should have their own credentials.</p>
+        <p><i>Need to delete a user?</i> Please contact administration.</p>
+        <div id="newUser">
+            <input placeholder="Entity Username" type="text">
+            <input placeholder="Entity Password" type="password">
+            <button>Add user</button>
+        </div>
+        <h2>Developer Mode</h2>
+        <p>Get what you need to use and add data to OCSync.</p>
+        <details>
+            <summary>Status JSON</summary>
+            <code>{"error": "could not update"}</code>
+        </details>
     </page>
 
 </body>

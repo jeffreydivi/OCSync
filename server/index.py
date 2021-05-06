@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
+from werkzeug.wsgi import FileWrapper
 from flask import Flask, send_file, request, Response
+from flask_cors import CORS, cross_origin
 from flask_socketio import SocketIO
 import json
 import bcrypt
@@ -14,6 +16,8 @@ with open("config.json") as config_file:
 # Load config
 app = Flask(__name__, static_url_path="/static")
 app.config['SECRET_KEY'] = config['secret_key']
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 socketio = SocketIO(app)
 
 # Note: Connect with a "normal" WebSockets connection with the following URL:
@@ -26,6 +30,7 @@ memory = {}
 def index():
     return send_file("static/index.html")
 
+@cross_origin()
 @app.route('/api/data')
 def data():
     try:
@@ -77,6 +82,23 @@ def uploadData(msg):
     except:
         socketio.emit("response", createErrorDict(401, "Please pass credentials in 'auth' key."))
 
+@socketio.on("newUser")
+def newUserWS(msg):
+    try:
+        creds = msg["auth"]
+        if validateKey(creds["username"], creds["password"]):
+            # Logged in; add user.
+            addKey(msg["username"], msg["password"])
+            socketio.emit("response", {
+                "user": creds["username"],
+                "status": "newUser",
+                "message": f"User \"{msg['username']}\" created."
+                })
+        else:
+            socketio.emit("response", createErrorDict(403, "Incorrect credentials."))
+    except:
+        socketio.emit("response", createErrorDict(401, "Please pass credentials in 'auth' key."))
+
 def createError(code, message):
     return Response(json.dumps(createErrorDict(code, message)), mimetype="application/json", status=code)
 
@@ -122,7 +144,7 @@ def initConsoleMode():
             print("Available commands: help, quit, users, report")
         elif first == "quit":
             print("Shutting down...")
-            os._exit(os.EX_OK)
+            os._exit(0)
         elif first == "users":
             try:
                 if cmd[1].lower() == "list":
@@ -150,3 +172,7 @@ if __name__ == '__main__':
         initConsoleMode()
     else:
         init()
+
+def application(env, start_response):
+    start_response('200 OK', [('Content-Type', 'text/html')])
+    init()
