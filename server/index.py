@@ -164,6 +164,7 @@ def initConsoleMode():
             except:
                 print("Syntax: users <list|add>")
         elif first == "report":
+            print(memory)
 
 
 if __name__ == "__main__":
