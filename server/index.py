@@ -15,23 +15,24 @@ with open("config.json") as config_file:
 
 # Load config
 app = Flask(__name__, static_url_path="/static")
-app.config['SECRET_KEY'] = config['secret_key']
+app.config["SECRET_KEY"] = config["secret_key"]
 cors = CORS(app)
-app.config['CORS_HEADERS'] = 'Content-Type'
+app.config["CORS_HEADERS"] = "Content-Type"
+app.config["CORS_ALLOW_HEADERS"] = config["host"]
 socketio = SocketIO(app)
 
 # Note: Connect with a "normal" WebSockets connection with the following URL:
 # ws://localhost:8080/socket.io/?EIO=3&transport=websocket
 
-# This is where we'll store data.
+# This is where we"ll store data.
 memory = {}
 
-@app.route('/')
+@app.route("/")
 def index():
     return send_file("static/index.html")
 
 @cross_origin()
-@app.route('/api/data')
+@app.route("/api/data")
 def data():
     try:
         creds = request.authorization
@@ -61,7 +62,7 @@ def getData(msg):
         else:
             socketio.emit("response", createErrorDict(403, "Incorrect credentials."))
     except:
-        socketio.emit("response", createErrorDict(401, "Please pass credentials in 'auth' key."))
+        socketio.emit("response", createErrorDict(401, "Please pass credentials in "auth" key."))
 
 @socketio.on("update")
 def uploadData(msg):
@@ -80,7 +81,7 @@ def uploadData(msg):
         else:
             socketio.emit("response", createErrorDict(403, "Incorrect credentials."))
     except:
-        socketio.emit("response", createErrorDict(401, "Please pass credentials in 'auth' key."))
+        socketio.emit("response", createErrorDict(401, "Please pass credentials in "auth" key."))
 
 @socketio.on("newUser")
 def newUserWS(msg):
@@ -97,7 +98,7 @@ def newUserWS(msg):
         else:
             socketio.emit("response", createErrorDict(403, "Incorrect credentials."))
     except:
-        socketio.emit("response", createErrorDict(401, "Please pass credentials in 'auth' key."))
+        socketio.emit("response", createErrorDict(401, "Please pass credentials in "auth" key."))
 
 def createError(code, message):
     return Response(json.dumps(createErrorDict(code, message)), mimetype="application/json", status=code)
@@ -166,7 +167,7 @@ def initConsoleMode():
             print(memory)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     if config["debug"]:
         threading.Thread(target=init).start()
         initConsoleMode()
@@ -174,5 +175,5 @@ if __name__ == '__main__':
         init()
 
 def application(env, start_response):
-    start_response('200 OK', [('Content-Type', 'text/html')])
+    start_response("200 OK", [("Content-Type", "text/html")])
     init()
