@@ -62,7 +62,7 @@ def getData(msg):
         else:
             socketio.emit("response", createErrorDict(403, "Incorrect credentials."))
     except:
-        socketio.emit("response", createErrorDict(401, "Please pass credentials in "auth" key."))
+        socketio.emit("response", createErrorDict(401, "Please pass credentials in \"auth\" key."))
 
 @socketio.on("update")
 def uploadData(msg):
@@ -81,7 +81,7 @@ def uploadData(msg):
         else:
             socketio.emit("response", createErrorDict(403, "Incorrect credentials."))
     except:
-        socketio.emit("response", createErrorDict(401, "Please pass credentials in "auth" key."))
+        socketio.emit("response", createErrorDict(401, "Please pass credentials in \"auth\" key."))
 
 @socketio.on("newUser")
 def newUserWS(msg):
@@ -98,7 +98,7 @@ def newUserWS(msg):
         else:
             socketio.emit("response", createErrorDict(403, "Incorrect credentials."))
     except:
-        socketio.emit("response", createErrorDict(401, "Please pass credentials in "auth" key."))
+        socketio.emit("response", createErrorDict(401, "Please pass credentials in \"auth\" key."))
 
 def createError(code, message):
     return Response(json.dumps(createErrorDict(code, message)), mimetype="application/json", status=code)
@@ -164,7 +164,6 @@ def initConsoleMode():
             except:
                 print("Syntax: users <list|add>")
         elif first == "report":
-            print(memory)
 
 
 if __name__ == "__main__":
